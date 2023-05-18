@@ -1,0 +1,292 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Multi-Modal Streaming Perception</title>
+<link href="./Stream_files/style.css" rel="stylesheet">
+<script type="text/javascript" src="./Stream_files/video-comparison.js"></script>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.0.1/model-viewer.min.js"></script>
+<!-- <script type="module" src="https://unpkg.com/@google/model-viewer@2.0.1/dist/model-viewer.min.js"></script> -->
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PWQ7C72CGK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PWQ7C72CGK');
+</script>
+
+<meta charset="utf-8">
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"> -->
+<meta name="viewport" content="width=1000; user-scalable=0;" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,500,600' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/assets/css/Highlight-Clean.css">
+<link rel="stylesheet" href="/assets/css/styles.css">
+
+<link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="manifest" href="/site.webmanifest">
+
+<meta property="og:site_name" content="Multi-Modal Streaming 3D Object Detection"/>
+<meta property="og:type" content="video.other" />
+<meta property="og:title" content="Multi-Modal Streaming 3D Object Detection" />
+<meta property="og:description" content="Multi-Modal Streaming 3D Object Detection" />
+<meta property="og:url" content="https://mmstream.github.io/" />
+
+<meta property="article:publisher" content="https://mmstream.github.io/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Multi-Modal Streaming 3D Object Detection" />
+<meta name="twitter:description" content="3D Detection using LiDAR packets/slices as they come complimented by camera images" />
+<meta name="twitter:url" content="https://mmstream.github.io/" />
+    <!-- <meta name="twitter:site" content="" /> -->
+
+
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  
+  #video-compare-container {
+	display: inline-block;
+	line-height: 0;
+	position: relative;
+	width: 100%;
+	padding-top: 42.3%;
+}
+#video-compare-container > video {
+	width: 100%;
+	position: absolute;
+	top: 0;
+	height: 100%;
+}
+#video-clipper {
+	width: 50%;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	overflow: hidden;
+}
+#video-clipper video {
+	width: 200%;
+	position: absolute;
+	height: 100%;
+}
+  .column {
+    float: left;
+    width: 20%;
+    padding: 5px;
+  }
+
+  .colum4 {
+    float: left;
+    width: 25%;
+    padding: 5px;
+  }
+  
+  /* Clearfix (clear floats) */
+  .row::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  </style>
+ <style>
+  .grid {
+   display: flex;
+   flex-direction: row;
+   padding: 5px;
+   align-content: center;
+   /* flex-wrap: wrap; */
+  }
+  .grid > div {
+   flex-grow: 1;
+   flex-shrink: 1;
+   padding: 5px;
+   
+  }
+  .center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+html {
+  scroll-behavior: smooth;
+}
+  </style>
+</head>
+
+<body>
+<div class="content">
+  <h1><strong>Multi-Modal Streaming 3D Object Detection</strong></h1>
+  <br>
+  <p id="authors"><a>Mazen Abdelfattah</a> <a>Kaiwen Yuan</a> <a>Z. Jane Wang</a> <a>Rabab Ward</a>
+  <br>
+  <br>
+  <span style="font-size: 22px">Department of Electrical and Computer Engineering
+  <br>
+  <span style="font-size: 22px">University of British Columbia 
+  </span></p>
+  <br>
+  <img src="teaser_fig.gif" class="teaser-gif" style="width:60%;" loop=infinite><br>
+  <h3 style="text-align:center"><em>A streaming camera-LiDAR detector taking as input only a single 22.5° LiDAR slice and its corresponding image </em></h3>
+    <font size="+2">
+          <p style="text-align: center;">
+            <a href="https://arxiv.org/abs/2209.04966" target="_blank">[Paper]</a> &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="https://github.com/mazen-ab/mmstreaming">[Code]</a> &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="#bib">[BibTeX]</a>
+          </p>
+    </font>
+</div>
+<div class="content">
+  <h2 style="text-align:center;">Abstract</h2>
+  <p>Modern autonomous vehicles rely heavily on mechanical LiDARs for perception. 
+    Current perception methods generally require 360° point clouds, 
+    collected sequentially as the LiDAR scans the azimuth and acquires consecutive wedge-shaped slices. 
+    The acquisition latency of a full scan (~ 100ms) may lead to outdated perception which is detrimental to safe operation.
+     Recent streaming perception works proposed directly processing LiDAR slices and compensating for the 
+     narrow field of view (FOV) of a slice by reusing features from preceding slices. 
+     These works, however, are all based on a single modality and require past information which may be outdated. 
+     Meanwhile, images from high-frequency cameras can support streaming models as they provide a larger FoV compared to a LiDAR slice. 
+     However, this difference in FoV complicates sensor fusion. 
+     We propose an innovative camera-LiDAR streaming 3D object detection framework that uses 
+     camera images instead of past LiDAR slices to provide an up-to-date, dense, and wide context for streaming perception. 
+     The proposed method outperforms prior streaming models on the challenging NuScenes benchmark in 
+     detection accuracy and end-to-end runtime. It also outperforms powerful full-scan detectors while being much faster. 
+     Our method is shown to be robust to missing camera images, narrow LiDAR slices, and small camera-LiDAR miscalibration. </p>
+</div>
+
+<div class="content">
+  <h2>Why streaming perception?</h2>
+  <p> A full LiDAR sweep is composed of a stream of slices/packets collected sequentially as the LiDAR scans the azimuth. 
+    Modern 3D detectors must wait for a full LiDAR scan (~ 100ms) before inference which presents a bottleneck for perception latency. 
+    This delay can lead to outdated detections which is detrimental to safe autonomous driving as shown below.</p>
+  <br>
+  <img src="./Stream_files/motiv.png" style="width: 40%; display: block; margin-left: auto; margin-right: auto;"> <br><br>
+  <p>
+    Instead of waiting for a full scan, streaming perception models take a LiDAR slice (once it arrives) as input. 
+    A LiDAR slice provides narrow 3D contextual information and may only contain a fragment of an object. 
+    To tackle this challenge, prior streaming works have utilized memory mechanisms and 
+    features from past slices to provide a wider global context. </p>
+</div>
+
+<div class="content">
+  <h2>Why multi-modal streaming perception?</h2>
+  <p> Due to the dynamic nature of autonomous driving, past features may not be an honest representation of the current state of the world 
+    especially at high speeds for the ego-vehicle or other dynamic objects of interest. </p>
+  <br>
+  <img src="./Stream_files/32det.png" style="width: 40%; display: block; margin-left: auto; margin-right: auto;"> <br><br>
+  <p>
+    Instead of using past features, we propose to expand the narrow LiDAR context with up-to-date image features coming from high frame-rate cameras.
+  Camera images also provide a wider FoV than a LiDAR slice, which makes them ideal in providing a global context for streaming detection. 
+  In the example above, a heavily fragmented vehicle in a very narrow 11.25° LiDAR slice is accurately detected in 3D using our fast multi-modal streaming framework.</p>
+</div>
+
+<div class="content">
+  <h2>Method</h2>
+  <p> Our streaming framework takes a LiDAR point cloud slice (in this example a 45° slice) 
+    and its corresponding image(s) as input (see cars and pedestrian).
+    These two modalities are then 3D-encoded separately and in parallel, then flattened to produce two top-down BEV feature maps. 
+    These features are then fused and sent to a BEV encoder and a detection head to produce 3D detections in a streaming fashion.</p>
+  <br>
+  <img src="./Stream_files/arch.png" style="width: 100%"> <br><br>
+  <p>
+    The example above shows the importance of the complimentary and spatially-related multi-modal feature maps: 
+    Images provide the context needed to accurately detect the fragmented bottom vehicle (dark purple box) with its very few points, 
+    and the person is detected despite occlusion and shade with the support of the point cloud input.</p>
+</div>
+
+<div class="content">
+  <h2>32-Slice Model Prediction vs Ground Truth</h2>
+  <p>Taking only an 11.25° slice of a full LiDAR scan and its corresponding image, our 32-slice model produces 
+    the following accurate 3D bounding box predictions (blue for cars, dark green for pedestrians) as shown below. Ground truth boxes shown in green.</p>
+  <br>
+    <video style="width: 80%; display: block; margin-left: auto; margin-right: auto;" autoplay muted loop>
+      <source src="./Stream_files/3_32_gt.mp4" type="video/mp4"> 
+      </video><br>
+      <p style="text-align:center;">Predictions of the 32-slice model</p>
+ <br>
+</div>
+
+
+<div class="content">
+  <h2>Our 8-Slice Streaming Model (45° LiDAR point cloud)</h2>
+  <!-- <p>Taking only an 11.25° slice of a full LiDAR scan and its corresponding image, our 32-slice model produces 
+    the following accurate 3D bounding box predictions (blue for cars, dark green for pedestrians) as shown below. Ground truth boxes shown in green.</p> -->
+  <br>
+    <video style="width: 80%; display: block; margin-left: auto; margin-right: auto;" autoplay muted loop>
+      <source src="./Stream_files/5_8slice.mp4" type="video/mp4"> 
+      </video><br>
+      <p style="text-align:center;">Predictions of the 8-slice model</p>
+ <br>
+</div>
+
+<div class="content">
+  <h2>Our 32-Slice Streaming Model (11.25 LiDAR point cloud)</h2>
+  <!-- <p>Taking only an 11.25° slice of a full LiDAR scan and its corresponding image, our 32-slice model produces 
+    the following accurate 3D bounding box predictions (blue for cars, dark green for pedestrians) as shown below. Ground truth boxes shown in green.</p> -->
+  <br>
+    <video style="width: 80%; display: block; margin-left: auto; margin-right: auto;" autoplay muted loop>
+      <source src="./Stream_files/9_32slice.mp4" type="video/mp4"> 
+      </video><br>
+      <p style="text-align:center;">Predictions of the 8-slice model</p>
+ <br>
+</div>
+
+<div class="content">
+  <h2>Robustness: Predictions without the back camera</h2>
+  <p>Our 8-slice model (45° of a full LiDAR scan) producing accurate predictions (shown in the point cloud input) without the back camera</p>
+  <br>
+    <video id="myVideo" style="width: 80%; display: block; margin-left: auto; margin-right: auto;" autoplay muted loop>
+      <source src="./Stream_files/noback.mp4" type="video/mp4"> 
+      </video>
+      <br>
+      <p style="text-align:center;">This demonstrates the robustness of our streaming framework 
+        that the camera with the largest FoV (back camera) can be missing and our 8-slice model still produces accurate 3D bounding box 
+        predictions in this space using the limited point cloud input</p>
+        <script>
+          var video = document.getElementById('myVideo');
+          video.addEventListener('loadedmetadata', function() {
+            video.playbackRate = 0.3; // Adjust the playback rate as desired (e.g., 0.5 for half speed)
+          });
+        </script>
+ <br>
+</div>
+
+<div class="content">
+  <h2>Robustness: Performance with camera-LiDAR miscalibration</h2>
+  <p> This figure shows the effect of various degrees of noise in camera-LiDAR calibration on the performance of our method.</p>
+  <br>
+  <img src="./Stream_files/calib2.png" style="width: 100%; display: block; margin-left: auto; margin-right: auto;"> <br><br>
+  <p>
+    Left: Projection of an RGB image to 3D points with various degrees of noise. 
+    Even small noise completely disappears some pedestrians and corrupts vehicle points 
+    posing a critical danger to point-wise fusion methods. 
+    Right: Effect of the calibration noise on the mAP of our streaming 8-slice model.</p>
+</div>
+
+
+<div class="content">
+  <a id="bib"><h2>BibTex</h2></a>
+  <code> @article{abdelfattah2023multi,<br>
+  &nbsp;&nbsp;title={Multi-modal Streaming 3D Object Detection},<br>
+  &nbsp;&nbsp;author={Abdelfattah, Mazen and Yuan, Kaiwen and Wang, Z Jane and Ward, Rabab},<br>
+  &nbsp;&nbsp;journal={arXiv preprint arXiv:2209.04966},<br>
+  &nbsp;&nbsp;year={2023}<br>
+  } </code> 
+</div>
+
+<p class="text-justify">
+  The website template was borrowed from <a href="https://dreambooth3d.github.io">DreamBooth3D</a>.
+</p>
+<!-- <div class="content" id="acknowledgements">
+  <p><strong>Acknowledgements</strong>:
+  </p>
+</div> -->
+</body>
+</html>
